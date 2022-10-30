@@ -1,0 +1,4 @@
+#Visual Studio
+venv/
+__pycache__/
+.vscode/
