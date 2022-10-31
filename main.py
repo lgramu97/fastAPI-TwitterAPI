@@ -171,7 +171,7 @@ def post(tweet: Tweet = Body(Required)):
     """
     # Write the tewwt locally in the tweet.json file.
     return write_json(
-        src="database/tweet.json",
+        src="database/tweets.json",
         opt="r+",
         keys=["tweet_id", "created_at", "updated_at"],
         response_model=tweet,
