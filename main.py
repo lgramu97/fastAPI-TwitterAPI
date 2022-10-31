@@ -158,8 +158,41 @@ def show_tweet():
     summary="Post a tweet",
     tags=["Tweets"]
 )
-def post():
-    pass
+def post(tweet: Tweet = Body(Required)):
+    """ 
+    Post a tweet in the app
+
+    Args:
+        tweet (Tweet): tweet with all the information.
+
+    Returns:
+        dictionary: json with all the tweet data.
+    """
+    # Write the tewwt locally in the tweet.json file.
+    with open("database/tweet.json", "r+", encoding="utf-8") as f:
+        # Read as string and convert to dictionary
+        results = json.loads(f.read())
+        # Convert tweet to dictionary
+        tweet_dict = tweet.dict()
+        # Convert UUID to STR
+        tweet_dict["tweet_id"] = str(tweet_dict["tweet_id"])
+        # Convert datetime to STR
+        tweet_dict["created_at"] = str(tweet_dict["created_at"])
+        # Convert updated_at to STR
+        tweet_dict["updated_at"] = str(tweet_dict["updated_at"])
+
+        # Cast user info to str
+        tweet_dict["by"]["user_id"] = str(tweet_dict["by"]["user_id"])
+        tweet_dict["by"]["birth_date"] = str(tweet_dict["by"]["birth_date"])
+
+        # Add tweet to my json
+        results.append(tweet_dict)
+        # Move to start
+        f.seek(0)
+        # Write in the file a json
+        f.write(json.dumps(results))
+
+        return tweet
 
 
 # Delete a tweet
