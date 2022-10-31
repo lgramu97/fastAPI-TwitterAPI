@@ -27,7 +27,7 @@ class UserLogin(UserBase):
     )
 
 
-class User(BaseModel):
+class User(UserBase):
     """
     User information.
     """

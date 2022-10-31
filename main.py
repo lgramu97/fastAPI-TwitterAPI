@@ -1,7 +1,9 @@
 # Python
 from typing import List
+import json
 # FastAPI
-from fastapi import FastAPI, status
+from fastapi import Body, FastAPI, status
+from pydantic import Required
 # Custom
 from models.users import User, UserRegister
 from models.tweet import Tweet
@@ -21,17 +23,34 @@ app = FastAPI()
     summary="Register a User",
     tags=["Users"]
 )
-def signup():
-    """
+def signup(user: UserRegister = Body(Required)):
+    """ 
     Register a User in the app.
-    
+
     Args:
-        -Request body parameter
-        
+        user (UserRegister): user with all the information to register.
+
     Returns:
-        User : information of the user.
+        dictionary: json with all the user data.
     """
-    pass
+    # Write the user locally in the users.json file.
+    with open("database/users.json", "r+", encoding="utf-8") as f:
+        # Read as string and convert to dictionary
+        results = json.loads(f.read())
+        # Convert user to dictionary
+        user_dict = user.dict()
+        # Convert UUID to STR
+        user_dict["user_id"] = str(user_dict["user_id"])
+        # Convert datetime to STR
+        user_dict["birth_date"] = str(user_dict["birth_date"])
+        # Add user to my json
+        results.append(user_dict)
+        # Move to start
+        f.seek(0)
+        # Write in the file a json
+        f.write(json.dumps(results))
+
+        return user
 
 
 # Login
