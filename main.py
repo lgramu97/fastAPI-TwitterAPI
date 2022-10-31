@@ -74,7 +74,18 @@ def login():
     tags=["Users"]
 )
 def show_all_users():
-    pass
+    """
+    Read all the users from database
+
+    Returns:
+        dictionary: returns a json list with all the users in the app
+    """
+    # Read from users.json
+    with open("database/users.json", "r", encoding="utf-8") as f:
+        # Read all the data
+        results = json.loads(f.read())
+        # Return the users as dict
+        return results
 
 
 # One user
