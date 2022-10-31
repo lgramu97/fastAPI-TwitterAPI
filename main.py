@@ -11,13 +11,6 @@ app = FastAPI()
 
 # Path Operations.
 
-@app.get(
-    path="/home"
-)
-def home():
-    return {"Twitter API": "Working Fine"}
-
-
 # Users
 
 # Signup
@@ -91,4 +84,64 @@ def delete_user():
 def update_user():
     pass
 
+
 # Tweets
+
+# Show all tweets
+@app.get(
+    path="/home",
+    response_model=List[Tweet],
+    status_code=status.HTTP_200_OK,
+    summary="Show all Tweets",
+    tags=["Tweets"]
+)
+def home():
+    return {"Twitter API": "Working Fine"}
+
+
+# Show a tweet
+@app.get(
+    path="/tweets/{tweet_id}",
+    response_model=Tweet,
+    status_code=status.HTTP_200_OK,
+    summary="Show a simple tweet",
+    tags=["Tweets"]
+)
+def show_tweet():
+    pass
+
+
+# Post a tweet
+@app.post(
+    path="/post",
+    response_model=Tweet,
+    status_code=status.HTTP_201_CREATED,
+    summary="Post a tweet",
+    tags=["Tweets"]
+)
+def post():
+    pass
+
+
+# Delete a tweet
+@app.delete(
+    path="/tweets/{tweet_id}/delete",
+    response_model=Tweet,
+    status_code=status.HTTP_200_OK,
+    summary="Delete a tweet",
+    tags=["Tweets"]
+)
+def delete_tweet():
+    pass
+
+
+# Update a tweet
+@app.put(
+    path="/tweets/{tweet_id}/update",
+    response_model=Tweet,
+    status_code=status.HTTP_200_OK,
+    summary="Update a tweet",
+    tags=["Tweets"]
+)
+def update_tweet():
+    pass
