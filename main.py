@@ -5,8 +5,9 @@ import json
 from fastapi import Body, FastAPI, status
 from pydantic import Required
 # Custom
-from models.users import User, UserRegister
-from models.tweet import Tweet
+from models.users import User, UserRegister, RESPONSE_MODEL_USER
+from models.tweet import Tweet, RESPONSE_MODEL_TWEET
+from utils.database import write_json
 
 app = FastAPI()
 
@@ -34,23 +35,12 @@ def signup(user: UserRegister = Body(Required)):
         dictionary: json with all the user data.
     """
     # Write the user locally in the users.json file.
-    with open("database/users.json", "r+", encoding="utf-8") as f:
-        # Read as string and convert to dictionary
-        results = json.loads(f.read())
-        # Convert user to dictionary
-        user_dict = user.dict()
-        # Convert UUID to STR
-        user_dict["user_id"] = str(user_dict["user_id"])
-        # Convert datetime to STR
-        user_dict["birth_date"] = str(user_dict["birth_date"])
-        # Add user to my json
-        results.append(user_dict)
-        # Move to start
-        f.seek(0)
-        # Write in the file a json
-        f.write(json.dumps(results))
-
-        return user
+    return write_json(
+        src="database/users.json",
+        opt="r+",
+        keys=["user_id", "birth_date"],
+        response_model=user,
+        name=RESPONSE_MODEL_USER)
 
 
 # Login
@@ -180,30 +170,12 @@ def post(tweet: Tweet = Body(Required)):
         dictionary: json with all the tweet data.
     """
     # Write the tewwt locally in the tweet.json file.
-    with open("database/tweets.json", "r+", encoding="utf-8") as f:
-        # Read as string and convert to dictionary
-        results = json.loads(f.read())
-        # Convert tweet to dictionary
-        tweet_dict = tweet.dict()
-        # Convert UUID to STR
-        tweet_dict["tweet_id"] = str(tweet_dict["tweet_id"])
-        # Convert datetime to STR
-        tweet_dict["created_at"] = str(tweet_dict["created_at"])
-        # Convert updated_at to STR
-        tweet_dict["updated_at"] = str(tweet_dict["updated_at"])
-
-        # Cast user info to str
-        tweet_dict["by"]["user_id"] = str(tweet_dict["by"]["user_id"])
-        tweet_dict["by"]["birth_date"] = str(tweet_dict["by"]["birth_date"])
-
-        # Add tweet to my json
-        results.append(tweet_dict)
-        # Move to start
-        f.seek(0)
-        # Write in the file a json
-        f.write(json.dumps(results))
-
-        return tweet
+    return write_json(
+        src="database/tweet.json",
+        opt="r+",
+        keys=["tweet_id", "created_at", "updated_at"],
+        response_model=tweet,
+        name=RESPONSE_MODEL_TWEET)
 
 
 # Delete a tweet

@@ -8,6 +8,8 @@ from pydantic import BaseModel, Field, Required
 # Custom
 from models.users import User
 
+RESPONSE_MODEL_TWEET = "Tweet"
+
 
 class Tweet(BaseModel):
     tweet_id: UUID = Field(Required)

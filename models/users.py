@@ -7,6 +7,11 @@ from datetime import date
 # Pydantinc
 from pydantic import BaseModel, EmailStr, Field, Required
 
+RESPONSE_MODEL_USER_BASE = "UserBase"
+RESPONSE_MODEL_USER_LOGIN = "UserLogin"
+RESPONSE_MODEL_USER_REGISTER = "UserRegister"
+RESPONSE_MODEL_USER = "User"
+
 
 class UserBase(BaseModel):
     """
