@@ -43,3 +43,14 @@ class User(BaseModel):
         max_length=20
     )
     birth_date: Optional[date] = Field(default=None)
+
+
+class UserRegister(User):
+    """
+    User Register class.
+    """
+    password: str = Field(
+        Required,
+        min_length=8,
+        max_length=64
+    )

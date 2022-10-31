@@ -3,7 +3,7 @@ from typing import List
 # FastAPI
 from fastapi import FastAPI, status
 # Custom
-from models.users import User
+from models.users import User, UserRegister
 from models.tweet import Tweet
 
 app = FastAPI()
@@ -22,6 +22,15 @@ app = FastAPI()
     tags=["Users"]
 )
 def signup():
+    """
+    Register a User in the app.
+    
+    Args:
+        -Request body parameter
+        
+    Returns:
+        User : information of the user.
+    """
     pass
 
 
