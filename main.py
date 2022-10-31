@@ -135,7 +135,18 @@ def update_user():
     tags=["Tweets"]
 )
 def home():
-    return {"Twitter API": "Working Fine"}
+    """
+    Show all the tweets.
+
+    Returns:
+        dictionary: returns a json list with all the tweets in the app
+    """
+    # Read from tweets.json
+    with open("database/tweets.json", "r", encoding="utf-8") as f:
+        # Read all the data
+        results = json.loads(f.read())
+        # Return the tweets as dict
+        return results
 
 
 # Show a tweet
@@ -169,7 +180,7 @@ def post(tweet: Tweet = Body(Required)):
         dictionary: json with all the tweet data.
     """
     # Write the tewwt locally in the tweet.json file.
-    with open("database/tweet.json", "r+", encoding="utf-8") as f:
+    with open("database/tweets.json", "r+", encoding="utf-8") as f:
         # Read as string and convert to dictionary
         results = json.loads(f.read())
         # Convert tweet to dictionary
