@@ -2,7 +2,7 @@
 from typing import List
 import json
 # FastAPI
-from fastapi import Body, FastAPI, HTTPException, status
+from fastapi import Body, FastAPI, HTTPException, Path, status
 from pydantic import Required
 # Custom
 from models.users import User, UserLogin, UserRegister, RESPONSE_MODEL_USER
@@ -56,7 +56,7 @@ def signup(user: UserRegister = Body(Required)):
     summary="Login a User",
     tags=["Users"]
 )
-def login(user: UserLogin = Body(Required)):
+def login(user: UserLogin = Body(Required)): # Could use Form to login
     """Log an user.
 
     Args:
@@ -116,9 +116,28 @@ def show_all_users():
     summary="Show a user",
     tags=["Users"]
 )
-def show_user():
-    pass
-
+def show_user(
+    user_id : str = Path(
+        Required,
+        title="User id",
+        description="Find an user by uuid") 
+    ): 
+    """
+    Read specific tweet finding by id.
+    
+    Returns:
+        User: json with all the user information.
+    """
+    with open(USERS_DATABASE,'r', encoding="utf-8") as f:
+        results = json.load(f)
+        
+        for user in results:
+            if user["user_id"] == user_id:
+                return user
+        
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="The user doens't exist")
 
 # Delete one user
 @app.delete(
