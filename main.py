@@ -2,12 +2,17 @@
 from typing import List
 import json
 # FastAPI
-from fastapi import Body, FastAPI, status
+from fastapi import Body, FastAPI, HTTPException, status
 from pydantic import Required
 # Custom
-from models.users import User, UserRegister, RESPONSE_MODEL_USER
+from models.users import User, UserLogin, UserRegister, RESPONSE_MODEL_USER
 from models.tweet import Tweet, RESPONSE_MODEL_TWEET
-from utils.database import write_json
+from utils.database import search_by_uuid, write_json
+
+# Settings
+TWEETS_DATABASE = "database/tweets.json"
+USERS_DATABASE = "database/users.json"
+
 
 app = FastAPI()
 
@@ -36,7 +41,7 @@ def signup(user: UserRegister = Body(Required)):
     """
     # Write the user locally in the users.json file.
     return write_json(
-        src="database/users.json",
+        src=USERS_DATABASE,
         opt="r+",
         keys=["user_id", "birth_date"],
         response_model=user,
@@ -51,8 +56,33 @@ def signup(user: UserRegister = Body(Required)):
     summary="Login a User",
     tags=["Users"]
 )
-def login():
-    pass
+def login(user: UserLogin = Body(Required)):
+    """Log an user.
+
+    Args:
+        user (UserLogin): uuid, email and password.
+
+    Raises:
+        HTTPException: user uuid doesn't exist.
+        HTTPException: user password mismatch
+
+    Returns:
+        User: json with all the user information.
+    """
+    user_dict = user.dict()
+    user_response = search_by_uuid(
+        src=USERS_DATABASE, id=str(user_dict["user_id"]))
+    if not user_response:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='User not found')
+    if user_response["password"] == user_dict["password"] and user_response["email"] == user_dict["email"]:
+        return user_response
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Wrong Password"
+        )
 
 
 # All users
@@ -71,7 +101,7 @@ def show_all_users():
         dictionary: returns a json list with all the users in the app
     """
     # Read from users.json
-    with open("database/users.json", "r", encoding="utf-8") as f:
+    with open(USERS_DATABASE, "r", encoding="utf-8") as f:
         # Read all the data
         results = json.loads(f.read())
         # Return the users as dict
@@ -132,7 +162,7 @@ def home():
         dictionary: returns a json list with all the tweets in the app
     """
     # Read from tweets.json
-    with open("database/tweets.json", "r", encoding="utf-8") as f:
+    with open(TWEETS_DATABASE, "r", encoding="utf-8") as f:
         # Read all the data
         results = json.loads(f.read())
         # Return the tweets as dict
@@ -171,7 +201,7 @@ def post(tweet: Tweet = Body(Required)):
     """
     # Write the tewwt locally in the tweet.json file.
     return write_json(
-        src="database/tweets.json",
+        src=TWEETS_DATABASE,
         opt="r+",
         keys=["tweet_id", "created_at", "updated_at"],
         response_model=tweet,

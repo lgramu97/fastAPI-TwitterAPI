@@ -31,3 +31,14 @@ def write_json(src: str, opt: str, keys: List[str], response_model, name: str):
         # Write json in the file
         f.write(json.dumps(results))
         return response_model
+
+
+def search_by_uuid(src : str, id : str):
+    with open(src, 'r', encoding="utf-8") as f:
+        # Read as string and convert to dictionary
+        results = json.loads(f.read())
+
+        for element in results:
+            if element["user_id"] == id:
+                return element
+        return None
