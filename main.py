@@ -56,7 +56,7 @@ def signup(user: UserRegister = Body(Required)):
     summary="Login a User",
     tags=["Users"]
 )
-def login(user: UserLogin = Body(Required)): # Could use Form to login
+def login(user: UserLogin = Body(Required)):  # Could use Form to login
     """Log an user.
 
     Args:
@@ -117,24 +117,24 @@ def show_all_users():
     tags=["Users"]
 )
 def show_user(
-    user_id : str = Path(
+    user_id: str = Path(
         Required,
         title="User id",
-        description="Find an user by uuid") 
-    ): 
+        description="Find an user by uuid")
+):
     """
     Read specific tweet finding by id.
-    
+
     Returns:
         User: json with all the user information.
     """
-    with open(USERS_DATABASE,'r', encoding="utf-8") as f:
+    with open(USERS_DATABASE, 'r', encoding="utf-8") as f:
         results = json.load(f)
-        
+
         for user in results:
             if user["user_id"] == user_id:
                 return user
-        
+
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="The user doens't exist")
@@ -142,13 +142,45 @@ def show_user(
 # Delete one user
 @app.delete(
     path="/users/{user_id}/delete",
-    response_model=User,
     status_code=status.HTTP_200_OK,
     summary="Delete a user",
     tags=["Users"]
 )
-def delete_user():
-    pass
+def delete_user(user_id: str = Path(
+        Required,
+        title="User id",
+        description="User uuid")
+):
+    """Delete a user using the uuid.
+
+    Args:
+        user_id (str, optional): UUID. 
+        
+    Raises:
+        HTTPException: the user doesn't exist
+
+    Returns:
+        str: message with confirmation
+    """
+    with open(USERS_DATABASE, 'r+', encoding="utf-8") as f:
+        results = json.load(f)
+        found = False
+        for user in results:
+            if user["user_id"] == user_id:
+                results.remove(user)
+                found = True
+
+        if found:
+            # Move to start
+            f.seek(0)
+            f.truncate()
+            # Write json in the file
+            f.write(json.dumps(results))
+            return {"Message": "User delete successfully."}
+
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="The user doens't exist")
 
 
 # Update one user
