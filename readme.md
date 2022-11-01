@@ -1,5 +1,15 @@
 # FastAPI - Twitter API
 
+## Challenges   
+
+### First challenge:
+* Users and Tweets usings json files.
+* All Users endpoints implemented.
+
+### Second challenge:
+* Users and Tweets usings postgreSQL database.
+* Docker
+
 ## Configuration
 * Create virtual enviroment:  
     
@@ -20,12 +30,3 @@
 
 
 
-## Challenges   
-
-### First challenge:
-* Users and Tweets usings json files.
-* All Users endpoints implemented.
-
-### Second challenge:
-* Users and Tweets usings postgreSQL database.
-* Docker
