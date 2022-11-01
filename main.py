@@ -139,6 +139,7 @@ def show_user(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="The user doens't exist")
 
+
 # Delete one user
 @app.delete(
     path="/users/{user_id}/delete",
@@ -155,7 +156,7 @@ def delete_user(user_id: str = Path(
 
     Args:
         user_id (str, optional): UUID. 
-        
+
     Raises:
         HTTPException: the user doesn't exist
 
@@ -191,8 +192,37 @@ def delete_user(user_id: str = Path(
     summary="Update a user",
     tags=["Users"]
 )
-def update_user():
-    pass
+def update_user(
+    user_id: str = Path(
+        Required,
+        title="User id",
+        description="User uuid"),
+    user_update: User = Body(
+        Required,
+        title="New User Data",
+        description="New data for the user"
+    )
+):
+    with open(USERS_DATABASE, 'r+', encoding="utf-8") as f:
+
+        users = json.load(f)
+
+        for user in users:
+            if user["user_id"] == user_id:
+                user_dict = user_update.dict()
+                user["email"] = user_dict["email"]
+                user["first_name"] = user_dict["first_name"]
+                user["last_name"] = user_dict["last_name"]
+                user["birth_date"] = str(user_dict["birth_date"])
+                f.seek(0)
+                f.truncate()
+                f.write(json.dumps(users))
+                return user
+
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="The user cannot be updated because it doesn't exist"
+        )
 
 
 # Tweets
