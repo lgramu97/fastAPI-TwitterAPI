@@ -17,3 +17,15 @@
 * To run fastAPI:  
 
         uvicorn main:app --reload
+
+
+
+## Challenges   
+
+### First challenge:
+* Users and Tweets usings json files.
+* All Users endpoints implemented.
+
+### Second challenge:
+* Users and Tweets usings postgreSQL database.
+* Docker

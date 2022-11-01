@@ -10,8 +10,8 @@ from models.tweet import Tweet, RESPONSE_MODEL_TWEET
 from utils.database import search_by_uuid, write_json
 
 # Settings
-TWEETS_DATABASE = "database/tweets.json"
-USERS_DATABASE = "database/users.json"
+TWEETS_DATABASE = "./database/tweets.json"
+USERS_DATABASE = "./database/users.json"
 
 
 app = FastAPI()
